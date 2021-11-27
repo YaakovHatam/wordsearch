@@ -5,12 +5,17 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.rtl.min.css';
 import { ThemeProvider } from "react-bootstrap";
+import { Provider } from 'react-redux';
+import store from './store/store';
 
 ReactDOM.render(
    <React.StrictMode>
-      <ThemeProvider dir="rtl">
-         <App />
-      </ThemeProvider>
+      <Provider store={store}>
+
+         <ThemeProvider dir="rtl">
+            <App />
+         </ThemeProvider>
+      </Provider>
    </React.StrictMode>,
    document.getElementById('root')
 );

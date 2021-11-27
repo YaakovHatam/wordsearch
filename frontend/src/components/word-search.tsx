@@ -1,10 +1,10 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { WordSearchCategories } from "../helpers/categories";
 import { WordTable } from "./word-table";
 import { WordPacker } from "../helpers/word-packer";
+import { useSelector } from "react-redux";
+import { selectCategories } from "../store/reducers/categories.reducer";
 
 const randomWords = (jsonPath: string) =>
    fetch(jsonPath).then(res => res.json().then((jRes: string[]) =>
@@ -16,13 +16,14 @@ export function WordSearch() {
    const ROWS = 22;
    const COLS = 34;
 
-   let params = useParams();
+   const params = useParams();
+   const categories = useSelector(selectCategories);
 
    const [wordSearchTable, setWordSearchTable] = useState<string[][]>([]);
    const [availableSlots, setAvailableSlots] = useState<string[][]>([]);
 
    const [selectedWords, setSelectedWords] = useState<string[]>([]);
-   const category = WordSearchCategories[params.category as string];
+   const category = categories[params.category as string];
 
    const makeTables = (words: string[]) => {
       const wordPacker = WordPacker.createWordPacker(words, COLS, ROWS);
@@ -31,11 +32,11 @@ export function WordSearch() {
       setAvailableSlots(wordPacker.getLetterGridClean());
       setSelectedWords(wordPacker.getWords());
    }
-   const fetchWordsAndMakeTables = () => randomWords(category.jsonPath).then(words => makeTables(words));
+   const fetchWordsAndMakeTables = () => randomWords(`${process.env.PUBLIC_URL}/words/${category.jsonFile}`).then(words => makeTables(words));
 
    useEffect(() => {
-      randomWords(category.jsonPath).then(words => makeTables(words));
-   }, [category.jsonPath]);
+      fetchWordsAndMakeTables();
+   }, []);
 
    return (
       <>

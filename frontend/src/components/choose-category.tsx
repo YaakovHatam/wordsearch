@@ -1,12 +1,21 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { WordSearchCategories } from "../helpers/categories";
+import { selectCategories, setCategories } from "../store/reducers/categories.reducer";
 
 export function ChooseCategory() {
-   let navigate = useNavigate();
+   const navigate = useNavigate();
+   const dispatch = useDispatch()
+
+
+   const categories = useSelector(selectCategories)
 
    const handleClick = (category: string) => navigate(`/generate/${category}`);
 
-   const wordSearchCategories = Object.entries(WordSearchCategories);
+   useEffect(() => {
+      WordSearchCategories().then(res => dispatch(setCategories(res)))
+   }, [])
 
    return (
       <div className="container mt-5">
@@ -18,7 +27,7 @@ export function ChooseCategory() {
             </select>
          </label>
          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
-            {wordSearchCategories.map(wsc =>
+            {Object.entries(categories).map(wsc =>
                <div className="col d-flex align-items-start" onClick={e => handleClick(wsc[0])}>
                   <div>
                      <h2 className="fw-bold mb-0">{wsc[1].heb}</h2>
