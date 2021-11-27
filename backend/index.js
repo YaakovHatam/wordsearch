@@ -8,7 +8,7 @@ const catToFilename = catName => Buffer.from(catName).toString('base64');
 const DATA_FILES = {
    '50_TO_100_TERMS': __dirname + '/wiki-data/categories-50-to-100-pages.json',
    '100_PLUS_TERMS': __dirname + '/wiki-data/categories-100-plus-pages.json',
-   'UNDER_50_TERMS': __dirname + '/wiki-data/categories-under-50-page.json',
+   '15_TO_50_TERMS': __dirname + '/wiki-data/categories-15-to-50-page.json',
    'CATEGORIES': __dirname + '/wiki-data/categories.json'
 }
 
@@ -16,7 +16,7 @@ const DATA_FILES = {
 const DATA_ARRAYS = {
    '50_TO_100_TERMS': [],
    '100_PLUS_TERMS': [],
-   'UNDER_50_TERMS': [],
+   '15_TO_50_TERMS': [],
    'CATEGORIES': []
 }
 
@@ -59,18 +59,35 @@ const doWork = async () => {
          DATA_ARRAYS['100_PLUS_TERMS'].push(catName);
       } else if (res.length >= 50) {
          DATA_ARRAYS['50_TO_100_TERMS'].push(catName);
-      } else {
-         DATA_ARRAYS['UNDER_50_TERMS'].push(catName);
+      } else if (res.length >= 15) {
+         DATA_ARRAYS['15_TO_50_TERMS'].push(catName);
       }
+
       saveList(catName, res);
-      console.log('saved', catName);
+      if (res.length >= 15) {
+         console.log('saved', catName);
+      } else {
+         console.log('under 15 not saved', catName);
+
+
+      }
 
    });
 };
 
-main();
+// main();
 // console.log(catToFilename('שירי לנה דל ריי'));
+const testFolder = './wiki-lists/';
+fs.readdirSync(testFolder).forEach((file, idx) => {
+   const len = JSON.parse(fs.readFileSync(testFolder + file, 'utf-8')).length;
+   if (len < 15) {
+      console.log(file, 'under 15, deleting');
+      fs.unlinkSync(testFolder + file);
+   } else {
+      console.log(file, 'more then 15, keep it');
 
+   }
+});
 
 
 // console.log(Buffer.from("SGVsbG8gV29ybGQ=", 'base64').toString('ascii'))
