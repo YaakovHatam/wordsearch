@@ -3,6 +3,8 @@ const fs = require('fs')
 
 const pagesInCategory = catName => wiki({ apiUrl: 'https://he.wikipedia.org/w/api.php' }).pagesInCategory(catName);
 
+const catToFilename = catName => Buffer.from(catName).toString('base64');
+
 const DATA_FILES = {
    '50_TO_100_TERMS': __dirname + '/wiki-data/categories-50-to-100-pages.json',
    '100_PLUS_TERMS': __dirname + '/wiki-data/categories-100-plus-pages.json',
@@ -26,17 +28,17 @@ const init = () => {
 
 
 const finish = () => {
+   console.log('saving');
    for (let prop in DATA_FILES) {
       fs.writeFileSync(DATA_FILES[prop], JSON.stringify(DATA_ARRAYS[prop]))
    }
+
 }
 
 
 const main = () => {
    init();
-
-   doWork().then(finish)
-
+   Promise.all(Array.from(Array(10).keys()).map(async a => doWork())).then(finish);
 }
 
 const saveList = (catName, list) => {
@@ -51,7 +53,6 @@ const doWork = async () => {
 
    DATA_ARRAYS.CATEGORIES.splice(DATA_ARRAYS.CATEGORIES.indexOf(catName), 1);
 
-   console.log(catName);
 
    return pagesInCategory('קטגוריה:' + catName).then(res => {
       if (res.length >= 100) {
@@ -62,10 +63,14 @@ const doWork = async () => {
          DATA_ARRAYS['UNDER_50_TERMS'].push(catName);
       }
       saveList(catName, res);
+      console.log('saved', catName);
+
    });
 };
 
 main();
+// console.log(catToFilename('שירי לנה דל ריי'));
+
 
 
 // console.log(Buffer.from("SGVsbG8gV29ybGQ=", 'base64').toString('ascii'))
