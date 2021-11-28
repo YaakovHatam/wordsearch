@@ -55,6 +55,10 @@ const doWork = async () => {
 
 
    return pagesInCategory('קטגוריה:' + catName).then(res => {
+      // clean list first
+      console.log('before filter: ', res.length);
+      res = res.filter(item => isHebrewString(item));
+      console.log('after filter: ', res.length);
       if (res.length >= 100) {
          DATA_ARRAYS['100_PLUS_TERMS'].push(catName);
       } else if (res.length >= 50) {
@@ -74,11 +78,80 @@ const doWork = async () => {
 
    });
 };
+const makeListsForClient = () => {
+   const clientPath = '/Users/kobe/dev/github/wordsearch/frontend/public/words/';
+   const list = JSON.parse(fs.readFileSync(DATA_FILES['50_TO_100_TERMS'], 'utf-8'));
+   // wiki-lists
+   const listsObject = {};
+   list.forEach(l => {
+      const fileName = catToFilename(l);
+      const sourceFile = `${__dirname}/wiki-lists/${fileName}.json`
+      // check file
 
-main();
+
+      if (JSON.parse(fs.readFileSync(sourceFile, 'utf-8'))
+         .filter(item => isHebrewString(item).length < 15)) {
+         console.log('skipping bad file', sourceFile);
+         return;
+      }
+
+      fs.copyFileSync(sourceFile, `${clientPath}${fileName}.json`);
+      listsObject[fileName] = {
+         "jsonFile": fileName,
+         "heb": l,
+         "desc": ""
+      }
+   });
+   fs.writeFileSync(clientPath + '/_categories.json', JSON.stringify(listsObject));
+}
+
+
+function isHebrewString(s) {
+   var i, charCode;
+   for (i = s.length; i--;) {
+      charCode = s.charCodeAt(i)
+      if (charCode == 1470) {
+
+      }
+      else if (charCode > 30 && charCode < 47) {
+
+      }
+      else if (charCode < 1488 || charCode > 1514) {
+         return false
+      }
+   }
+   return true
+}
+
+
+
+function deleteNonHebrewLists() {
+   fs.readdir('./wiki-lists', (err, files) => {
+      files.forEach(file => {
+         const data = JSON.parse(fs.readFileSync(`${__dirname}/wiki-lists/${file}`, 'utf-8'));
+
+         if (data.filter(item => isHebrewString(item)).length) {
+            fs.unlinkSync(`${__dirname}/wiki-lists/${file}`);
+         }
+      });
+   });
+}
+
+function removeItemsFromListThatHasNoFile() {
+   const file = JSON.parse(fs.readFileSync(DATA_FILES['50_TO_100_TERMS'], 'utf-8'));
+   file.forEach(l => {
+      const filePath = `${__dirname}/wiki-lists/${catToFilename(l)}.json`;
+      if (!fs.existsSync(filePath)) {
+      }
+   })
+}
+
+
+removeItemsFromListThatHasNoFile();
+// makeListsForClient();
+
+// main();
 // console.log(catToFilename('שירי לנה דל ריי'));
 
 
-
-// console.log(Buffer.from("SGVsbG8gV29ybGQ=", 'base64').toString('ascii'))
-
+//console.log(Buffer.from("16nXmdeo15kg15zXoNeUINeT15wg16jXmdeZ", 'base64').toString('utf-8'))

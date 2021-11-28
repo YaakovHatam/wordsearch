@@ -1,12 +1,1 @@
-{
-   "animals": {
-      "jsonFile": "animals.json",
-      "heb": "חיות",
-      "desc": "תפזורת עם שמות של חיות"
-   },
-   "rivers": {
-      "jsonFile": "river.json",
-      "heb": "נחלים בישראל",
-      "desc": "שמות של נחלים בארץ ישראל"
-   }
-}
+{}
