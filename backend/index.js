@@ -151,10 +151,10 @@ function removeItemsFromListThatHasNoFile() {
 }
 
 // deleteNonHebrewLists();
-removeItemsFromListThatHasNoFile();
-//makeListsForClient();
+// removeItemsFromListThatHasNoFile();
+// makeListsForClient();
 
-// main();
+main();
 // console.log(catToFilename('שירי לנה דל ריי'));
 
 
