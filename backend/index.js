@@ -48,12 +48,20 @@ const saveList = (catName, list) => {
 }
 
 
-const doWork = async () => {
-   const rand = Math.floor(Math.random() * DATA_ARRAYS.CATEGORIES.length);
-   const catName = DATA_ARRAYS.CATEGORIES[rand];
+const doWork = async specificTerm => {
+   let catIdx;
+   if (specificTerm) {
+      catIdx = DATA_ARRAYS.CATEGORIES.findIndex(c => c.indexOf(specificTerm) > -1);
+   } else {
+      catIdx = Math.floor(Math.random() * DATA_ARRAYS.CATEGORIES.length);
+   }
+   console.log(catIdx);
+   if (catIdx === -1) {
+      throw new Error(specificTerm + ' not found');
+   }
+   const catName = DATA_ARRAYS.CATEGORIES[catIdx];
 
    DATA_ARRAYS.CATEGORIES.splice(DATA_ARRAYS.CATEGORIES.indexOf(catName), 1);
-
 
    return pagesInCategory('קטגוריה:' + catName).then(res => {
 
@@ -89,7 +97,12 @@ const doWork = async () => {
 
 const makeListsForClient = () => {
    const clientPath = path.resolve(__dirname, '../', 'frontend/public/words/');
-   const list = JSON.parse(fs.readFileSync(DATA_FILES['50_TO_100_TERMS'], 'utf-8'));
+   const list1 = JSON.parse(fs.readFileSync(DATA_FILES['15_TO_50_TERMS'], 'utf-8'));
+   const list2 = JSON.parse(fs.readFileSync(DATA_FILES['50_TO_100_TERMS'], 'utf-8'));
+   const list3 = JSON.parse(fs.readFileSync(DATA_FILES['100_PLUS_TERMS'], 'utf-8'));
+
+   const list = [...new Set([...list1, ...list2, ...list3])];
+
    // wiki-lists
    const listsObject = {};
    list.forEach(l => {
@@ -145,7 +158,10 @@ function deleteNonHebrewLists() {
 }
 
 function removeItemsFromListThatHasNoFile() {
-   const file = JSON.parse(fs.readFileSync(DATA_FILES['50_TO_100_TERMS'], 'utf-8'));
+   const chosenFile = DATA_FILES['100_PLUS_TERMS'];
+
+   const file = JSON.parse(fs.readFileSync(chosenFile, 'utf-8'));
+
    const newFile = [...file];
    file.forEach(l => {
       const filePath = `${__dirname}/wiki-lists/${catToFilename(l)}.json`;
@@ -154,12 +170,12 @@ function removeItemsFromListThatHasNoFile() {
       }
    });
    console.log(file.length, newFile.length);
-   fs.writeFileSync(DATA_FILES['50_TO_100_TERMS'], JSON.stringify(newFile));
+   fs.writeFileSync(chosenFile, JSON.stringify(newFile));
 
 }
 
 // deleteNonHebrewLists();
-// removeItemsFromListThatHasNoFile();
+//removeItemsFromListThatHasNoFile();
 makeListsForClient();
 
 // main();
