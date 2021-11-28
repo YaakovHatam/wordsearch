@@ -56,9 +56,16 @@ const doWork = async () => {
 
 
    return pagesInCategory('קטגוריה:' + catName).then(res => {
+
+      // remove parenthesis and text inside, trim
+      res = res.map(l => l.replace(/\(.*\)/g, ""));
+      res = res.map(l => l.trim());
+
       // clean list first
       console.log('before filter: ', res.length);
       res = res.filter(item => isHebrewString(item));
+
+
       console.log('after filter: ', res.length);
       if (res.length >= 100) {
          DATA_ARRAYS['100_PLUS_TERMS'].push(catName);
@@ -91,7 +98,7 @@ const makeListsForClient = () => {
       const sourceFile = `${__dirname}/wiki-lists/${fileName}.json`
       // check file
 
-      const data = JSON.parse(fs.readFileSync(sourceFile, 'utf-8'));
+      let data = JSON.parse(fs.readFileSync(sourceFile, 'utf-8'));
       if (data.filter(item => isHebrewString(item)).length < 15) {
          console.log('skipping bad file', sourceFile);
          return;
@@ -99,7 +106,7 @@ const makeListsForClient = () => {
 
       fs.copyFileSync(sourceFile, `${clientPath}/${fileName}.json`);
       listsObject[fileName] = {
-         "jsonFile": fileName,
+         "jsonFile": fileName + '.json',
          "heb": l,
          "desc": ""
       }
@@ -160,3 +167,37 @@ makeListsForClient();
 
 
 //console.log(Buffer.from("16nXmdeo15kg15zXoNeUINeT15wg16jXmdeZ", 'base64').toString('utf-8'))
+
+function fetchCat(catName) {
+   pagesInCategory('קטגוריה:' + catName).then(res => {
+
+      // remove parenthesis and text inside, trim
+      res = res.map(l => l.replace(/\(.*\)/g, ""));
+      res = res.map(l => l.trim());
+
+      // clean list first
+      console.log('before filter: ', res.length);
+      res = res.filter(item => isHebrewString(item));
+
+
+      console.log('after filter: ', res.length);
+      if (res.length >= 100) {
+         DATA_ARRAYS['100_PLUS_TERMS'].push(catName);
+      } else if (res.length >= 50) {
+         DATA_ARRAYS['50_TO_100_TERMS'].push(catName);
+      } else if (res.length >= 15) {
+         DATA_ARRAYS['15_TO_50_TERMS'].push(catName);
+      }
+
+      if (res.length >= 15) {
+         saveList(catName, res);
+         console.log('saved', catName);
+      } else {
+         console.log('under 15 not saved', catName);
+
+
+      }
+
+   });
+
+}

@@ -110,6 +110,8 @@ export class WordPacker {
    public addWord(word: string): boolean {
 
       var normalizedWord = word.split(' ').join('');
+      normalizedWord = normalizedWord.split('\'').join('');
+      normalizedWord = normalizedWord.split('-').join('');
       normalizedWord = normalizedWord.split(String.fromCharCode(1498)).join(String.fromCharCode(1499));
       normalizedWord = normalizedWord.split(String.fromCharCode(1501)).join(String.fromCharCode(1502));
       normalizedWord = normalizedWord.split(String.fromCharCode(1503)).join(String.fromCharCode(1504));
