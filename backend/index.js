@@ -63,8 +63,8 @@ const doWork = async () => {
          DATA_ARRAYS['15_TO_50_TERMS'].push(catName);
       }
 
-      saveList(catName, res);
       if (res.length >= 15) {
+         saveList(catName, res);
          console.log('saved', catName);
       } else {
          console.log('under 15 not saved', catName);
@@ -75,19 +75,9 @@ const doWork = async () => {
    });
 };
 
-// main();
+main();
 // console.log(catToFilename('שירי לנה דל ריי'));
-const testFolder = './wiki-lists/';
-fs.readdirSync(testFolder).forEach((file, idx) => {
-   const len = JSON.parse(fs.readFileSync(testFolder + file, 'utf-8')).length;
-   if (len < 15) {
-      console.log(file, 'under 15, deleting');
-      fs.unlinkSync(testFolder + file);
-   } else {
-      console.log(file, 'more then 15, keep it');
 
-   }
-});
 
 
 // console.log(Buffer.from("SGVsbG8gV29ybGQ=", 'base64').toString('ascii'))
