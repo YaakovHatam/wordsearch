@@ -84,13 +84,13 @@ const makeListsForClient = () => {
    // wiki-lists
    const listsObject = {};
    list.forEach(l => {
+      console.log(l);
       const fileName = catToFilename(l);
       const sourceFile = `${__dirname}/wiki-lists/${fileName}.json`
       // check file
 
-
-      if (JSON.parse(fs.readFileSync(sourceFile, 'utf-8'))
-         .filter(item => isHebrewString(item).length < 15)) {
+      const data = JSON.parse(fs.readFileSync(sourceFile, 'utf-8'));
+      if (data.filter(item => isHebrewString(item)).length < 15) {
          console.log('skipping bad file', sourceFile);
          return;
       }
@@ -129,8 +129,8 @@ function deleteNonHebrewLists() {
    fs.readdir('./wiki-lists', (err, files) => {
       files.forEach(file => {
          const data = JSON.parse(fs.readFileSync(`${__dirname}/wiki-lists/${file}`, 'utf-8'));
-
-         if (data.filter(item => isHebrewString(item)).length) {
+         console.log(file);
+         if (data.filter(item => isHebrewString(item)).length < 15) {
             fs.unlinkSync(`${__dirname}/wiki-lists/${file}`);
          }
       });
@@ -150,9 +150,9 @@ function removeItemsFromListThatHasNoFile() {
 
 }
 
-
+// deleteNonHebrewLists();
 removeItemsFromListThatHasNoFile();
-// makeListsForClient();
+//makeListsForClient();
 
 // main();
 // console.log(catToFilename('שירי לנה דל ריי'));
