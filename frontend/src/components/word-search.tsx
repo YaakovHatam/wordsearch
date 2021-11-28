@@ -13,8 +13,8 @@ const randomWords = (jsonPath: string) =>
 
 
 export function WordSearch() {
-   const ROWS = 22;
-   const COLS = 34;
+   const ROWS = 18;
+   const COLS = 24;
 
    const params = useParams();
    const categories = useSelector(selectCategories);

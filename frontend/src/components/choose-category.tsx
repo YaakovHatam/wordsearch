@@ -17,13 +17,13 @@ export function ChooseCategory() {
 
    return (
       <div className="container mt-5">
-         <label>בחירת גודל תפזורת:
+         {/*<label>בחירת גודל תפזורת:
             <select className="form-select form-select-lg" size={8} aria-label="size 3 select example">
                <option value="1">23 שורות ו34 עמודות</option>
                <option value="2">Two</option>
                <option value="3">Three</option>
             </select>
-         </label>
+         </label>*/}
          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
             {Object.entries(categories).map(wsc =>
                <Link key={wsc[1].jsonFile} to={`/generate/${wsc[0]}`}>My Profile
