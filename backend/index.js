@@ -139,11 +139,15 @@ function deleteNonHebrewLists() {
 
 function removeItemsFromListThatHasNoFile() {
    const file = JSON.parse(fs.readFileSync(DATA_FILES['50_TO_100_TERMS'], 'utf-8'));
+   const newFile = [...file];
    file.forEach(l => {
       const filePath = `${__dirname}/wiki-lists/${catToFilename(l)}.json`;
       if (!fs.existsSync(filePath)) {
+         newFile.splice(file.indexOf(l), 1);
       }
-   })
+   });
+   fs.writeFileSync(DATA_FILES['50_TO_100_TERMS'], JSON.stringify(newFile));
+
 }
 
 
