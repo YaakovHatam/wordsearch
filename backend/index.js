@@ -111,7 +111,7 @@ const makeListsForClient = () => {
          "desc": ""
       }
    });
-   fs.writeFileSync(clientPath + '/_categories.json', JSON.stringify(listsObject));
+   fs.writeFileSync(clientPath + '/1categories.json', JSON.stringify(listsObject));
 }
 
 
