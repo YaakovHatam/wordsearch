@@ -1,5 +1,6 @@
 const wiki = require('wikijs').default;
-const fs = require('fs')
+const fs = require('fs');
+const path = require('path');
 
 const pagesInCategory = catName => wiki({ apiUrl: 'https://he.wikipedia.org/w/api.php' }).pagesInCategory(catName);
 
@@ -78,13 +79,14 @@ const doWork = async () => {
 
    });
 };
+
 const makeListsForClient = () => {
-   const clientPath = '/Users/kobe/dev/github/wordsearch/frontend/public/words/';
+   const clientPath = path.resolve(__dirname, '../', 'frontend/public/words/');
    const list = JSON.parse(fs.readFileSync(DATA_FILES['50_TO_100_TERMS'], 'utf-8'));
    // wiki-lists
    const listsObject = {};
    list.forEach(l => {
-      console.log(l);
+      console.log('makeListsForClient', l);
       const fileName = catToFilename(l);
       const sourceFile = `${__dirname}/wiki-lists/${fileName}.json`
       // check file
@@ -95,7 +97,7 @@ const makeListsForClient = () => {
          return;
       }
 
-      fs.copyFileSync(sourceFile, `${clientPath}${fileName}.json`);
+      fs.copyFileSync(sourceFile, `${clientPath}/${fileName}.json`);
       listsObject[fileName] = {
          "jsonFile": fileName,
          "heb": l,
@@ -123,13 +125,11 @@ function isHebrewString(s) {
    return true
 }
 
-
-
 function deleteNonHebrewLists() {
    fs.readdir('./wiki-lists', (err, files) => {
       files.forEach(file => {
          const data = JSON.parse(fs.readFileSync(`${__dirname}/wiki-lists/${file}`, 'utf-8'));
-         console.log(file);
+         console.log('deleteNonHebrewLists', file);
          if (data.filter(item => isHebrewString(item)).length < 15) {
             fs.unlinkSync(`${__dirname}/wiki-lists/${file}`);
          }
@@ -146,15 +146,16 @@ function removeItemsFromListThatHasNoFile() {
          newFile.splice(file.indexOf(l), 1);
       }
    });
+   console.log(file.length, newFile.length);
    fs.writeFileSync(DATA_FILES['50_TO_100_TERMS'], JSON.stringify(newFile));
 
 }
 
 // deleteNonHebrewLists();
 // removeItemsFromListThatHasNoFile();
-// makeListsForClient();
+makeListsForClient();
 
-main();
+// main();
 // console.log(catToFilename('שירי לנה דל ריי'));
 
 
