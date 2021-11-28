@@ -176,9 +176,9 @@ function removeItemsFromListThatHasNoFile() {
 
 // deleteNonHebrewLists();
 //removeItemsFromListThatHasNoFile();
-makeListsForClient();
+// makeListsForClient();
 
-// main();
+main();
 // console.log(catToFilename('שירי לנה דל ריי'));
 
 
