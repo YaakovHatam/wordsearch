@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { WordSearchCategories } from "../helpers/categories";
 import { selectCategories, setCategories } from "../store/reducers/categories.reducer";
 
@@ -10,8 +10,6 @@ export function ChooseCategory() {
 
 
    const categories = useSelector(selectCategories)
-
-   const handleClick = (category: string) => navigate(`/generate/${category}`);
 
    useEffect(() => {
       WordSearchCategories().then(res => dispatch(setCategories(res)))
@@ -28,13 +26,15 @@ export function ChooseCategory() {
          </label>
          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
             {Object.entries(categories).map(wsc =>
-               <div className="col d-flex align-items-start" onClick={e => handleClick(wsc[0])}>
-                  <div>
-                     <h2 className="fw-bold mb-0">{wsc[1].heb}</h2>
-                     <p>{wsc[1].desc}</p>
-                     <span role='button' className="btn btn-lg btn-light">לחולל תשבץ</span>
+               <Link to={`/generate/${wsc[0]}`}>My Profile
+                  <div className="col d-flex align-items-start">
+                     <div>
+                        <h2 className="fw-bold mb-0">{wsc[1].heb}</h2>
+                        <p>{wsc[1].desc}</p>
+                        <span role='button' className="btn btn-lg btn-light">לחולל תשבץ</span>
+                     </div>
                   </div>
-               </div>
+               </Link>
             )}
          </div>
       </div>

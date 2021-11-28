@@ -1,1 +1,7 @@
-{}
+{
+    "test": {
+        "jsonFile": "asd",
+        "heb": "string",
+        "desc": "string"
+    }
+}
