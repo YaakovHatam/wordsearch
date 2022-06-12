@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { WordSearchCategories } from "../helpers/categories";
 import { selectCategories, setCategories } from "../store/reducers/categories.reducer";
 

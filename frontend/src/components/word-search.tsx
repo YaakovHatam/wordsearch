@@ -8,13 +8,13 @@ import { selectCategories } from "../store/reducers/categories.reducer";
 
 const randomWords = (jsonPath: string) =>
    fetch(jsonPath).then(res => res.json().then((jRes: string[]) =>
-      jRes.sort(() => .5 - Math.random()).slice(0, 79)
+      jRes.sort(() => .5 - Math.random()).slice(0, 15)
    ));
 
 
 export function WordSearch() {
    const ROWS = 18;
-   const COLS = 24;
+   const COLS = 15;
 
    const params = useParams();
    const categories = useSelector(selectCategories);
