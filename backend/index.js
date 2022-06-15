@@ -2,6 +2,15 @@ const wiki = require('wikijs').default;
 const fs = require('fs');
 const path = require('path');
 
+const blacklist = [
+   'נפטרים ב',
+   'ילידות 1',
+   'שנפטרו ב-',
+   'נפטרים ב-',
+   'שנולדו ב-',
+   'תבניות'
+]
+
 const pagesInCategory = catName => wiki({ apiUrl: 'https://he.wikipedia.org/w/api.php' }).pagesInCategory(catName);
 
 const catToFilename = catName => Buffer.from(catName).toString('base64');
@@ -15,18 +24,11 @@ const DATA_FILES = {
 
 /** @type {Object.<string, string[]>} */
 const DATA_ARRAYS = {
-   '50_TO_100_TERMS': [],
-   '100_PLUS_TERMS': [],
-   '15_TO_50_TERMS': [],
-   'CATEGORIES': []
+   '50_TO_100_TERMS': require(DATA_FILES['50_TO_100_TERMS']),
+   '100_PLUS_TERMS': require(DATA_FILES['100_PLUS_TERMS']),
+   '15_TO_50_TERMS': require(DATA_FILES['15_TO_50_TERMS']),
+   'CATEGORIES': require(DATA_FILES.CATEGORIES)
 }
-
-const init = () => {
-   for (let prop in DATA_FILES) {
-      DATA_ARRAYS[prop] = JSON.parse(fs.readFileSync(DATA_FILES[prop], 'utf-8'));
-   }
-}
-
 
 const finish = () => {
    console.log('saving');
@@ -38,8 +40,10 @@ const finish = () => {
 
 
 const main = () => {
-   init();
-   Promise.all(Array.from(Array(10).keys()).map(async a => doWork())).then(finish);
+   deleteNonHebrewLists();
+   removeItemsFromListThatHasNoFile();
+   makeListsForClient();
+   //Promise.all(Array.from(Array(10).keys()).map(async a => doWork())).then(finish);
 }
 
 const saveList = (catName, list) => {
@@ -63,6 +67,12 @@ const doWork = async specificTerm => {
 
    DATA_ARRAYS.CATEGORIES.splice(DATA_ARRAYS.CATEGORIES.indexOf(catName), 1);
 
+   if (blacklist.some(b => catName.indexOf(b) > -1)) {
+      console.log('Backlist category: ', catName);
+      return;
+   }
+   console.log('category picked: ', catName);
+   // if (catName.startsWith('ויקינתונים')) return; 
    return pagesInCategory('קטגוריה:' + catName).then(res => {
 
       // remove parenthesis and text inside, trim
@@ -87,7 +97,7 @@ const doWork = async specificTerm => {
          saveList(catName, res);
          console.log('saved', catName);
       } else {
-         console.log('under 15 not saved', catName);
+         console.log('under 15 not saved', catName, 'length:', res.length);
 
 
       }
@@ -174,9 +184,6 @@ function removeItemsFromListThatHasNoFile() {
 
 }
 
-// deleteNonHebrewLists();
-//removeItemsFromListThatHasNoFile();
-// makeListsForClient();
 
 main();
 // console.log(catToFilename('שירי לנה דל ריי'));
@@ -209,7 +216,7 @@ function fetchCat(catName) {
          saveList(catName, res);
          console.log('saved', catName);
       } else {
-         console.log('under 15 not saved', catName);
+         console.log('under 15 not saved', catName, 'length:', res.length);
 
 
       }
@@ -217,3 +224,5 @@ function fetchCat(catName) {
    });
 
 }
+
+
