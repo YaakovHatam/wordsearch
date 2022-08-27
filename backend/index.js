@@ -40,10 +40,10 @@ const finish = () => {
 
 
 const main = () => {
-   deleteNonHebrewLists();
-   removeItemsFromListThatHasNoFile();
-   makeListsForClient();
-   //Promise.all(Array.from(Array(10).keys()).map(async a => doWork())).then(finish);
+   //deleteNonHebrewLists();
+   //removeItemsFromListThatHasNoFile();
+   //makeListsForClient();
+   Promise.all(Array.from(Array(10).keys()).map(async a => doWork())).then(finish);
 }
 
 const saveList = (catName, list) => {
