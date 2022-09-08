@@ -1,6 +1,8 @@
-const wiki = require('wikijs').default;
-const fs = require('fs');
-const path = require('path');
+import wiki from 'wikijs';
+import { writeFileSync, readFileSync, copyFileSync, readdir, unlinkSync, existsSync } from 'fs';
+import { resolve } from 'path';
+import { isHebrewString } from './misc.js';
+import { DATA_ARRAYS, saveDataArrays, saveList } from './data-files.js';
 
 const blacklist = [
    'נפטרים ב',
@@ -11,47 +13,25 @@ const blacklist = [
    'תבניות'
 ]
 
-const pagesInCategory = catName => wiki({ apiUrl: 'https://he.wikipedia.org/w/api.php' }).pagesInCategory(catName);
+const pagesInCategory = catName => wiki({ apiUrl: 'https://he.wikipedia.org/w/api.php' })
+   .pagesInCategory(catName);
 
 const catToFilename = catName => Buffer.from(catName).toString('base64');
-
-const DATA_FILES = {
-   '50_TO_100_TERMS': __dirname + '/wiki-data/categories-50-to-100-pages.json',
-   '100_PLUS_TERMS': __dirname + '/wiki-data/categories-100-plus-pages.json',
-   '15_TO_50_TERMS': __dirname + '/wiki-data/categories-15-to-50-page.json',
-   'CATEGORIES': __dirname + '/wiki-data/categories.json'
-}
-
-/** @type {Object.<string, string[]>} */
-const DATA_ARRAYS = {
-   '50_TO_100_TERMS': require(DATA_FILES['50_TO_100_TERMS']),
-   '100_PLUS_TERMS': require(DATA_FILES['100_PLUS_TERMS']),
-   '15_TO_50_TERMS': require(DATA_FILES['15_TO_50_TERMS']),
-   'CATEGORIES': require(DATA_FILES.CATEGORIES)
-}
-
-const finish = () => {
-   console.log('saving');
-   for (let prop in DATA_FILES) {
-      fs.writeFileSync(DATA_FILES[prop], JSON.stringify(DATA_ARRAYS[prop]))
-   }
-
-}
-
 
 const main = () => {
    //deleteNonHebrewLists();
    //removeItemsFromListThatHasNoFile();
    //makeListsForClient();
-   Promise.all(Array.from(Array(10).keys()).map(async a => doWork())).then(finish);
-}
-
-const saveList = (catName, list) => {
-   const path = __dirname + '/wiki-lists/' + Buffer.from(catName).toString('base64') + '.json';
-   fs.writeFileSync(path, JSON.stringify(list));
+   Promise.all(Array.from(Array(10).keys()).map(async a => doWork())).then(saveDataArrays);
 }
 
 
+
+/**
+ * 
+ * @param {string} specificTerm 
+ * @returns 
+ */
 const doWork = async specificTerm => {
    let catIdx;
    if (specificTerm) {
@@ -106,10 +86,10 @@ const doWork = async specificTerm => {
 };
 
 const makeListsForClient = () => {
-   const clientPath = path.resolve(__dirname, '../', 'frontend/public/words/');
-   const list1 = JSON.parse(fs.readFileSync(DATA_FILES['15_TO_50_TERMS'], 'utf-8'));
-   const list2 = JSON.parse(fs.readFileSync(DATA_FILES['50_TO_100_TERMS'], 'utf-8'));
-   const list3 = JSON.parse(fs.readFileSync(DATA_FILES['100_PLUS_TERMS'], 'utf-8'));
+   const clientPath = resolve(__dirname, '../', 'frontend/public/words/');
+   const list1 = JSON.parse(readFileSync(DATA_FILES['15_TO_50_TERMS'], 'utf-8'));
+   const list2 = JSON.parse(readFileSync(DATA_FILES['50_TO_100_TERMS'], 'utf-8'));
+   const list3 = JSON.parse(readFileSync(DATA_FILES['100_PLUS_TERMS'], 'utf-8'));
 
    const list = [...new Set([...list1, ...list2, ...list3])];
 
@@ -121,47 +101,32 @@ const makeListsForClient = () => {
       const sourceFile = `${__dirname}/wiki-lists/${fileName}.json`
       // check file
 
-      let data = JSON.parse(fs.readFileSync(sourceFile, 'utf-8'));
+      let data = JSON.parse(readFileSync(sourceFile, 'utf-8'));
       if (data.filter(item => isHebrewString(item)).length < 15) {
          console.log('skipping bad file', sourceFile);
          return;
       }
 
-      fs.copyFileSync(sourceFile, `${clientPath}/${fileName}.json`);
+      copyFileSync(sourceFile, `${clientPath}/${fileName}.json`);
       listsObject[fileName] = {
          "jsonFile": fileName + '.json',
          "heb": l,
          "desc": ""
       }
    });
-   fs.writeFileSync(clientPath + '/1categories.json', JSON.stringify(listsObject));
+   writeFileSync(clientPath + '/1categories.json', JSON.stringify(listsObject));
 }
 
 
-function isHebrewString(s) {
-   var i, charCode;
-   for (i = s.length; i--;) {
-      charCode = s.charCodeAt(i)
-      if (charCode == 1470) {
 
-      }
-      else if (charCode > 30 && charCode < 47) {
-
-      }
-      else if (charCode < 1488 || charCode > 1514) {
-         return false
-      }
-   }
-   return true
-}
 
 function deleteNonHebrewLists() {
-   fs.readdir('./wiki-lists', (err, files) => {
+   readdir('./wiki-lists', (err, files) => {
       files.forEach(file => {
-         const data = JSON.parse(fs.readFileSync(`${__dirname}/wiki-lists/${file}`, 'utf-8'));
+         const data = JSON.parse(readFileSync(`${__dirname}/wiki-lists/${file}`, 'utf-8'));
          console.log('deleteNonHebrewLists', file);
          if (data.filter(item => isHebrewString(item)).length < 15) {
-            fs.unlinkSync(`${__dirname}/wiki-lists/${file}`);
+            unlinkSync(`${__dirname}/wiki-lists/${file}`);
          }
       });
    });
@@ -170,17 +135,17 @@ function deleteNonHebrewLists() {
 function removeItemsFromListThatHasNoFile() {
    const chosenFile = DATA_FILES['100_PLUS_TERMS'];
 
-   const file = JSON.parse(fs.readFileSync(chosenFile, 'utf-8'));
+   const file = JSON.parse(readFileSync(chosenFile, 'utf-8'));
 
    const newFile = [...file];
    file.forEach(l => {
       const filePath = `${__dirname}/wiki-lists/${catToFilename(l)}.json`;
-      if (!fs.existsSync(filePath)) {
+      if (!existsSync(filePath)) {
          newFile.splice(file.indexOf(l), 1);
       }
    });
    console.log(file.length, newFile.length);
-   fs.writeFileSync(chosenFile, JSON.stringify(newFile));
+   writeFileSync(chosenFile, JSON.stringify(newFile));
 
 }
 
@@ -204,6 +169,7 @@ function fetchCat(catName) {
 
 
       console.log('after filter: ', res.length);
+
       if (res.length >= 100) {
          DATA_ARRAYS['100_PLUS_TERMS'].push(catName);
       } else if (res.length >= 50) {
