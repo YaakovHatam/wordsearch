@@ -1,7 +1,6 @@
 import { writeFileSync, readFileSync, copyFileSync, readdir, unlinkSync, existsSync } from 'fs';
-import { resolve } from 'path';
 import { isHebrewString } from './misc.js';
-import { DATA_ARRAYS, saveDataArrays, saveList } from './data-files.js';
+import { clientPath, DATA_ARRAYS, DATA_FILES, saveDataArrays, saveList } from './data-files.js';
 import WikiJS from 'wikijs';
 
 const blacklist = [
@@ -29,8 +28,8 @@ const catToFilename = catName => Buffer.from(catName).toString('base64');
 const main = () => {
    //deleteNonHebrewLists();
    //removeItemsFromListThatHasNoFile();
-   //makeListsForClient();
-   Promise.all(Array.from(Array(30).keys()).map(async a => doWork())).then(saveDataArrays);
+   makeListsForClient();
+   // Promise.all(Array.from(Array(30).keys()).map(async a => doWork())).then(saveDataArrays);
 }
 
 
@@ -94,7 +93,6 @@ const doWork = async specificTerm => {
 };
 
 const makeListsForClient = () => {
-   const clientPath = resolve(__dirname, '../', 'frontend/public/words/');
    const list1 = JSON.parse(readFileSync(DATA_FILES['15_TO_50_TERMS'], 'utf-8'));
    const list2 = JSON.parse(readFileSync(DATA_FILES['50_TO_100_TERMS'], 'utf-8'));
    const list3 = JSON.parse(readFileSync(DATA_FILES['100_PLUS_TERMS'], 'utf-8'));
@@ -106,7 +104,7 @@ const makeListsForClient = () => {
    list.forEach(l => {
       console.log('makeListsForClient', l);
       const fileName = catToFilename(l);
-      const sourceFile = `${__dirname}/wiki-lists/${fileName}.json`
+      const sourceFile = `./wiki-lists/${fileName}.json`
       // check file
 
       let data = JSON.parse(readFileSync(sourceFile, 'utf-8'));

@@ -1,6 +1,7 @@
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { writeFileSync, readFileSync } from 'fs';
+import { resolve } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -31,5 +32,7 @@ const saveList = (catName, list) => {
    const path = __dirname + '/wiki-lists/' + Buffer.from(catName).toString('base64') + '.json';
    writeFileSync(path, JSON.stringify(list));
 }
+const clientPath = resolve(__dirname, '../', 'frontend/public/words/');
 
-export { DATA_ARRAYS, saveDataArrays, saveList }
+
+export { DATA_ARRAYS, DATA_FILES, saveDataArrays, saveList, clientPath }
