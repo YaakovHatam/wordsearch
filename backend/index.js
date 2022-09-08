@@ -1,8 +1,8 @@
-import wiki from 'wikijs';
 import { writeFileSync, readFileSync, copyFileSync, readdir, unlinkSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import { isHebrewString } from './misc.js';
 import { DATA_ARRAYS, saveDataArrays, saveList } from './data-files.js';
+import WikiJS from 'wikijs';
 
 const blacklist = [
    'נפטרים ב',
@@ -10,10 +10,18 @@ const blacklist = [
    'שנפטרו ב-',
    'נפטרים ב-',
    'שנולדו ב-',
-   'תבניות'
+   'תבניות',
+   'כדורגלני',
+   'כדורסלני',
+   'דוגמניות',
+   'דוגמנים',
+   'אירוויזיון',
+   'ויקיפדיה: עריכה',
+   'ויקינתונים - השוואת ערכים',
+   'ויקינתונים:'
 ]
 
-const pagesInCategory = catName => wiki({ apiUrl: 'https://he.wikipedia.org/w/api.php' })
+const pagesInCategory = catName => WikiJS.default({ apiUrl: 'https://he.wikipedia.org/w/api.php' })
    .pagesInCategory(catName);
 
 const catToFilename = catName => Buffer.from(catName).toString('base64');

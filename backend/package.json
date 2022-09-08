@@ -11,6 +11,6 @@
    "author": "",
    "license": "ISC",
    "dependencies": {
-      "wikijs": "^6.3.2"
+      "wikijs": "^6.3.3"
    }
 }
