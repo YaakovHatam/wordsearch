@@ -190,7 +190,7 @@ function fetchCat(catName) {
          saveList(catName, res);
          console.log('saved', catName);
       } else {
-         console.log('under 15 not saved', catName, 'length:', res.length);
+         // console.log('under 15 not saved', catName, 'length:', res.length);
 
 
       }
