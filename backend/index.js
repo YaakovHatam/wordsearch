@@ -30,7 +30,7 @@ const main = () => {
    //deleteNonHebrewLists();
    //removeItemsFromListThatHasNoFile();
    //makeListsForClient();
-   Promise.all(Array.from(Array(10).keys()).map(async a => doWork())).then(saveDataArrays);
+   Promise.all(Array.from(Array(30).keys()).map(async a => doWork())).then(saveDataArrays);
 }
 
 
