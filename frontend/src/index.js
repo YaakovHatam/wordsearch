@@ -15,6 +15,7 @@ root.render(
       <Provider store={store}>
          <ThemeProvider dir="rtl">
             <App />
+            <div>version {process.env.REACT_APP_VERSION}</div>
          </ThemeProvider>
       </Provider>
    </React.StrictMode>
