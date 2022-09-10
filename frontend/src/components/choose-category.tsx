@@ -25,7 +25,7 @@ export function ChooseCategory() {
          </label>*/}
          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 py-5">
             {Object.entries(categories).map(wsc =>
-               <Link key={wsc[1].jsonFile} to={`/generate/${wsc[0]}`}>
+               <Link key={wsc[1].jsonFile} to={`${wsc[0]}`}>
                   <div className="col d-flex align-items-start">
                      <div>
                         <h2 className="fw-bold mb-0">{wsc[1].heb}</h2>

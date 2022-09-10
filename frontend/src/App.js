@@ -9,7 +9,7 @@ function App() {
       <BrowserRouter>
          <Routes>
             <Route path="/wordsearch" element={<ChooseCategory />} />
-            <Route path="/generate/:category" element={<WordSearch />} />
+            <Route path="/wordsearch/:category" element={<WordSearch />} />
          </Routes>
       </BrowserRouter>
    );
