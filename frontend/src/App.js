@@ -2,16 +2,16 @@ import './App.css';
 import { ChooseCategory } from "./components/choose-category";
 import { WordSearch } from "./components/word-search";
 
-import { MemoryRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
    return (
-      <MemoryRouter>
+      <BrowserRouter>
          <Routes>
-            <Route path="/" element={<ChooseCategory />} />
+            <Route path="/wordsearch" element={<ChooseCategory />} />
             <Route path="/generate/:category" element={<WordSearch />} />
          </Routes>
-      </MemoryRouter>
+      </BrowserRouter>
    );
 }
 
