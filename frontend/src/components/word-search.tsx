@@ -6,9 +6,9 @@ import { WordPacker } from "../helpers/word-packer";
 import { useSelector } from "react-redux";
 import { selectCategories } from "../store/reducers/categories.reducer";
 
-const randomWords = (jsonPath: string) =>
+const randomWords = (jsonPath: string, maxWords: number = 15, maxWordLen = 10) =>
    fetch(jsonPath).then(res => res.json().then((jRes: string[]) =>
-      jRes.sort(() => .5 - Math.random()).slice(0, 15)
+      jRes.filter(w => w.length <= maxWordLen).sort(() => .5 - Math.random()).slice(0, maxWords)
    ));
 
 
