@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/wordsearch/static/css/main.45c03fcd.css",
+    "main.js": "/wordsearch/static/js/main.82a1b362.js",
+    "static/js/787.5a03759a.chunk.js": "/wordsearch/static/js/787.5a03759a.chunk.js",
+    "index.html": "/wordsearch/index.html",
+    "main.45c03fcd.css.map": "/wordsearch/static/css/main.45c03fcd.css.map",
+    "main.82a1b362.js.map": "/wordsearch/static/js/main.82a1b362.js.map",
+    "787.5a03759a.chunk.js.map": "/wordsearch/static/js/787.5a03759a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.45c03fcd.css",
+    "static/js/main.82a1b362.js"
+  ]
+}
